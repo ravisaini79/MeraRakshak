@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "Tracker",
+    "slug": "tracker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.ravi.tracker"
+    }
+  }
+}
