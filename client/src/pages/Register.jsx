@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Shield, Lock, Mail, User, Phone, Loader2, AlertCircle } from 'lucide-react';
+import AuthService from '../services/AuthService';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +15,6 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth(); // We'll just login after register
   const navigate = useNavigate();
-  import AuthService from '../services/AuthService';
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

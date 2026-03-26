@@ -5,6 +5,11 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AdminPanel from './pages/AdminPanel';
+import Devices from './pages/Devices';
+import Tracking from './pages/Tracking';
+import Security from './pages/Security';
+import Family from './pages/Family';
+import Settings from './pages/Settings';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 
@@ -41,6 +46,36 @@ function AppRoutes() {
       <Route path="/dashboard" element={
         <ProtectedRoute>
           <Layout><Dashboard /></Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/devices" element={
+        <ProtectedRoute>
+          <Layout><Devices /></Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/tracking" element={
+        <ProtectedRoute>
+          <Layout><Tracking /></Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/security" element={
+        <ProtectedRoute>
+          <Layout><Security /></Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/family" element={
+        <ProtectedRoute>
+          <Layout><Family /></Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/settings" element={
+        <ProtectedRoute>
+          <Layout><Settings /></Layout>
         </ProtectedRoute>
       } />
       
