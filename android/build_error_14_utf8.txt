@@ -1,0 +1,33 @@
+﻿Starting a Gradle Daemon, 2 incompatible Daemons could not be reused, use --status for details
+./gradlew : 
+At line:1 char:1
++ ./gradlew assembleDebug > 
+build_error_14.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~
+    + CategoryInfo          : NotSpecified:  
+   (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandE 
+   rror
+ 
+FAILURE: Build failed with an exception.
+
+* Where:
+Settings file 
+'D:\Tracker\android\settings.gradle' line: 3
+
+* What went wrong:
+A problem occurred evaluating settings 
+'android'.
+> Process 'command 'node'' finished with 
+non-zero exit value -2147483645
+
+* Try:
+> Run with --stacktrace option to get the 
+stack trace.
+> Run with --info or --debug option to get 
+more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 31s

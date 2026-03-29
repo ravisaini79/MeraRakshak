@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ActivityIndicator, Platform, Alert } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Platform, Alert, StatusBar } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Device from 'expo-device';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
@@ -8,6 +8,11 @@ import SplashScreen from './screens/Splash';
 import Onboarding from './screens/Onboarding';
 import LoginSignup from './screens/LoginSignup';
 import Dashboard from './screens/Dashboard';
+import AppSelector from './screens/AppSelector';
+import CapturedImages from './screens/CapturedImages';
+import MapTracking from './screens/MapTracking';
+import SecurityTimeline from './screens/SecurityTimeline';
+import MonitoringManager from './components/MonitoringManager';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { COLORS } from './theme/Theme';
 import AuthService from './services/AuthService';
@@ -26,7 +31,7 @@ const AppContent = () => {
 
   useEffect(() => {
     let trackingInterval;
-    
+
     if (userToken) {
       // 1. Setup Notifications
       registerForPushNotificationsAsync().then(token => {
@@ -55,7 +60,7 @@ const AppContent = () => {
           }
         }, 30000); // 30 seconds to be battery friendly
       };
-      
+
       startTracking();
 
       return () => {
@@ -75,26 +80,51 @@ const AppContent = () => {
     );
   }
 
-  if (userToken) {
-    return <Dashboard />; // Or use a Navigator if implemented
-  }
-
   return (
-    <View style={styles.container}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: COLORS.light.background }}>
+        <StatusBar barStyle="light-content" />
+        <MonitoringManager />
+        {currentScreen === 'AppSelector' && (
+          <AppSelector onBack={() => navigate('Dashboard')} />
+        )}
+        {currentScreen === 'CapturedImages' && (
+          <CapturedImages onBack={() => navigate('Dashboard')} />
+        )}
+        {currentScreen === 'MapTracking' && (
+          <MapTracking onBack={() => navigate('Dashboard')} />
+        )}
+        {currentScreen === 'SecurityTimeline' && (
+          <SecurityTimeline onBack={() => navigate('Dashboard')} />
+        )}
+        {currentScreen === 'Dashboard' && (
+          <Dashboard onNavigate={navigate} />
+        )}
+      </View>
+    </GestureHandlerRootView>
+  );
+}
+
+return (
+  <GestureHandlerRootView style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: COLORS.light.background }}>
+      <StatusBar barStyle="dark-content" />
+      <MonitoringManager />
       {currentScreen === 'Splash' && (
         <SplashScreen onFinish={() => navigate('Onboarding')} />
       )}
-      
+
       {currentScreen === 'Onboarding' && (
         <Onboarding onComplete={() => navigate('Login')} />
       )}
-      
+
       {currentScreen === 'Login' && (
         <LoginSignup />
       )}
     </View>
-  );
-};
+  </GestureHandlerRootView>
+);
+
 
 async function registerForPushNotificationsAsync() {
   let token;
@@ -117,7 +147,7 @@ async function registerForPushNotificationsAsync() {
     if (finalStatus !== 'granted') {
       return null;
     }
-    
+
     try {
       token = (await Notifications.getExpoPushTokenAsync({
         projectId: Constants.expoConfig?.extra?.eas?.projectId,
