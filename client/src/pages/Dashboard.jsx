@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Tablet, Shield, MapPin, AlertTriangle, Clock, Battery, Signal } from 'lucide-react';
+import { Tablet, Shield, MapPin, AlertTriangle, Clock, Battery, Signal, Lock, Volume2, Loader2, CheckCircle2, XCircle } from 'lucide-react';
 import AuthService from '../services/AuthService';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -28,6 +28,27 @@ const Dashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [selectedDevice, setSelectedDevice] = useState(null);
+  const [actionLoading, setActionLoading] = useState(null); // 'alarm', 'lock', 'ring'
+  const [statusMsg, setStatusMsg] = useState({ type: '', text: '' });
+
+  const handleQuickAction = async (actionType, deviceId) => {
+    setActionLoading(actionType);
+    setStatusMsg({ type: '', text: '' });
+    
+    try {
+      let response;
+      if (actionType === 'alarm') response = await AuthService.triggerAlarm(deviceId);
+      else if (actionType === 'lock') response = await AuthService.lockDevice(deviceId);
+      else if (actionType === 'ring') response = await AuthService.ringDevice(deviceId);
+      
+      setStatusMsg({ type: 'success', text: response.message });
+      setTimeout(() => setStatusMsg({ type: '', text: '' }), 5000);
+    } catch (err) {
+      setStatusMsg({ type: 'error', text: err.response?.data?.message || 'Action failed' });
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   const fetchDashboardData = async () => {
     try {
@@ -104,12 +125,56 @@ const Dashboard = () => {
                   </div>
                 </div>
               )}
+
+              {selectedDevice?._id === device._id && (
+                <div className="mt-6 pt-6 border-t border-slate-100">
+                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Quick Actions</h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); document.getElementById('map-container')?.scrollIntoView({ behavior: 'smooth' }); }}
+                      className="flex items-center justify-center gap-2 p-3 bg-indigo-50 text-indigo-600 rounded-xl font-bold text-xs hover:bg-indigo-100 transition-colors"
+                    >
+                      <MapPin size={14} /> Track
+                    </button>
+                    <button 
+                      disabled={actionLoading === 'alarm'}
+                      onClick={(e) => { e.stopPropagation(); handleQuickAction('alarm', device._id); }}
+                      className="flex items-center justify-center gap-2 p-3 bg-red-50 text-red-600 rounded-xl font-bold text-xs hover:bg-red-100 transition-colors disabled:opacity-50"
+                    >
+                      {actionLoading === 'alarm' ? <Loader2 size={14} className="animate-spin" /> : <AlertTriangle size={14} />} Alarm
+                    </button>
+                    <button 
+                      disabled={actionLoading === 'lock'}
+                      onClick={(e) => { e.stopPropagation(); handleQuickAction('lock', device._id); }}
+                      className="flex items-center justify-center gap-2 p-3 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-slate-800 transition-colors disabled:opacity-50"
+                    >
+                      {actionLoading === 'lock' ? <Loader2 size={14} className="animate-spin" /> : <Lock size={14} />} Lock
+                    </button>
+                    <button 
+                      disabled={actionLoading === 'ring'}
+                      onClick={(e) => { e.stopPropagation(); handleQuickAction('ring', device._id); }}
+                      className="flex items-center justify-center gap-2 p-3 bg-emerald-50 text-emerald-600 rounded-xl font-bold text-xs hover:bg-emerald-100 transition-colors disabled:opacity-50"
+                    >
+                      {actionLoading === 'ring' ? <Loader2 size={14} className="animate-spin" /> : <Volume2 size={14} />} Ring
+                    </button>
+                  </div>
+
+                  {statusMsg.text && (
+                    <div className={`mt-4 p-3 rounded-xl flex items-center gap-2 text-[10px] font-bold ${
+                      statusMsg.type === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'
+                    }`}>
+                      {statusMsg.type === 'success' ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
+                      {statusMsg.text}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>
 
         {/* Live Tracking Map */}
-        <div className="lg:col-span-2 rounded-[2rem] overflow-hidden bg-white shadow-xl shadow-slate-200/50 border border-slate-100 relative h-[600px]">
+        <div id="map-container" className="lg:col-span-2 rounded-[2rem] overflow-hidden bg-white shadow-xl shadow-slate-200/50 border border-slate-100 relative h-[600px]">
           <div className="absolute top-6 left-6 z-[1000] bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 max-w-xs">
             <h3 className="font-bold text-slate-900 flex items-center gap-2">
               <MapPin size={18} className="text-indigo-600" /> Live Tracking

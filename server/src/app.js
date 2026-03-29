@@ -12,6 +12,13 @@ const familyRoutes = require('./routes/familyRoutes');
 const securityRoutes = require('./routes/securityRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 
+// Advanced Tracking routes
+const callLogRoutes = require('./routes/callLogRoutes');
+const callUserRoutes = require('./routes/callUserRoutes');
+const advancedSecurityRoutes = require('./routes/newSecurityRoutes');
+const messageUserRoutes = require('./routes/messageUserRoutes');
+const messageRoutes = require('./routes/messageRoutes');
+
 dotenv.config();
 
 const app = express();
@@ -26,6 +33,17 @@ app.use('/api/location', locationRoutes);
 app.use('/api/family', familyRoutes);
 app.use('/api/security', securityRoutes);
 app.use('/api/admin', adminRoutes);
+
+// Advanced Tracking API Mounts
+app.use('/api/call-logs', callLogRoutes);
+app.use('/api/call-users', callUserRoutes);
+app.use('/api/security-events', advancedSecurityRoutes);
+app.use('/api/message-users', messageUserRoutes);
+app.use('/api/messages', messageRoutes);
+
+// Setup Swagger
+const setupSwagger = require('./config/swagger');
+setupSwagger(app);
 
 // Error Handling
 app.use(errorHandler);

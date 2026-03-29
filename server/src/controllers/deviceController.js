@@ -35,4 +35,50 @@ const getDevices = asyncHandler(async (req, res) => {
   res.json(devices);
 });
 
-module.exports = { registerDevice, getDevices };
+// @desc    Trigger alarm on device
+// @route   POST /api/devices/:id/alarm
+// @access  Private
+const triggerAlarm = asyncHandler(async (req, res) => {
+  const device = await Device.findOne({ _id: req.params.id, userId: req.user._id });
+  if (!device) {
+    res.status(404);
+    throw new Error('Device not found');
+  }
+
+  // In a real app, you'd send a push notification or MQTT message here
+  console.log(`Triggering alarm on device: ${device.name} (${device.deviceId})`);
+  
+  res.json({ message: 'Alarm triggered successfully' });
+});
+
+// @desc    Lock device
+// @route   POST /api/devices/:id/lock
+// @access  Private
+const lockDevice = asyncHandler(async (req, res) => {
+  const device = await Device.findOne({ _id: req.params.id, userId: req.user._id });
+  if (!device) {
+    res.status(404);
+    throw new Error('Device not found');
+  }
+
+  console.log(`Locking device: ${device.name} (${device.deviceId})`);
+  
+  res.json({ message: 'Device locked successfully' });
+});
+
+// @desc    Ring device
+// @route   POST /api/devices/:id/ring
+// @access  Private
+const ringDevice = asyncHandler(async (req, res) => {
+  const device = await Device.findOne({ _id: req.params.id, userId: req.user._id });
+  if (!device) {
+    res.status(404);
+    throw new Error('Device not found');
+  }
+
+  console.log(`Ringing device: ${device.name} (${device.deviceId})`);
+  
+  res.json({ message: 'Device is ringing' });
+});
+
+module.exports = { registerDevice, getDevices, triggerAlarm, lockDevice, ringDevice };

@@ -74,6 +74,30 @@ const AuthService = {
       headers: { Authorization: `Bearer ${user?.token}` }
     });
     return response.data;
+  },
+
+  triggerAlarm: async (deviceId) => {
+    const user = AuthService.getCurrentUser();
+    const response = await axios.post(`${API_URL}/devices/${deviceId}/alarm`, {}, {
+      headers: { Authorization: `Bearer ${user?.token}` }
+    });
+    return response.data;
+  },
+
+  lockDevice: async (deviceId) => {
+    const user = AuthService.getCurrentUser();
+    const response = await axios.post(`${API_URL}/devices/${deviceId}/lock`, {}, {
+      headers: { Authorization: `Bearer ${user?.token}` }
+    });
+    return response.data;
+  },
+
+  ringDevice: async (deviceId) => {
+    const user = AuthService.getCurrentUser();
+    const response = await axios.post(`${API_URL}/devices/${deviceId}/ring`, {}, {
+      headers: { Authorization: `Bearer ${user?.token}` }
+    });
+    return response.data;
   }
 };
 

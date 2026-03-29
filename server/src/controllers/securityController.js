@@ -57,4 +57,50 @@ const getSecurityEvents = asyncHandler(async (req, res) => {
   res.json(events);
 });
 
-module.exports = { reportTheft, logSecurityEvent, getSecurityEvents };
+// @desc    Create a new user-level security event
+// @route   POST /api/security-events
+// @access  Private
+const createSecurityEvent = asyncHandler(async (req, res) => {
+  const { userId, latitude, longitude, address, date, isWrong } = req.body;
+  const imagePath = req.file ? req.file.path : null;
+
+  if (!userId) {
+    res.status(400);
+    throw new Error('User ID is required');
+  }
+
+  const event = await SecurityEvent.create({
+    userId,
+    imagePath,
+    latitude,
+    longitude,
+    address,
+    date,
+    isWrong,
+  });
+
+  res.status(201).json(event);
+});
+
+// @desc    Get user-level security events
+// @route   GET /api/security-events/:userId
+// @access  Private
+const getUserSecurityEvents = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  if (req.user._id.toString() !== userId) {
+    res.status(401);
+    throw new Error('Not authorized to access these events');
+  }
+
+  const events = await SecurityEvent.find({ userId }).sort('-date');
+  res.json(events);
+});
+
+module.exports = { 
+  reportTheft, 
+  logSecurityEvent, 
+  getSecurityEvents,
+  createSecurityEvent,
+  getUserSecurityEvents
+};

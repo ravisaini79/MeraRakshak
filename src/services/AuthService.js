@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
-const API_URL = 'http://172.18.239.39:3000'; // Updated for mobile connectivity
+const API_URL = 'http://10.173.157.39:3000'; // Updated for mobile connectivity
 
 const AuthService = {
   async register(userData) {
