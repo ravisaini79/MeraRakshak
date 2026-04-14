@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ActivityIndicator, Platform, Alert, StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Device from 'expo-device';
@@ -83,47 +84,44 @@ const AppContent = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={{ flex: 1, backgroundColor: COLORS.light.background }}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle={currentScreen === 'Splash' ? "light-content" : "dark-content"} />
         <MonitoringManager />
+        
+        {currentScreen === 'Splash' && (
+          <SplashScreen onFinish={() => navigate('Onboarding')} />
+        )}
+
+        {currentScreen === 'Onboarding' && (
+          <Onboarding onComplete={() => navigate('Login')} />
+        )}
+
+        {currentScreen === 'Login' && (
+          <LoginSignup onLoginSuccess={() => navigate('Dashboard')} />
+        )}
+
         {currentScreen === 'AppSelector' && (
           <AppSelector onBack={() => navigate('Dashboard')} />
         )}
+        
         {currentScreen === 'CapturedImages' && (
           <CapturedImages onBack={() => navigate('Dashboard')} />
         )}
+        
         {currentScreen === 'MapTracking' && (
           <MapTracking onBack={() => navigate('Dashboard')} />
         )}
+        
         {currentScreen === 'SecurityTimeline' && (
           <SecurityTimeline onBack={() => navigate('Dashboard')} />
         )}
+        
         {currentScreen === 'Dashboard' && (
           <Dashboard onNavigate={navigate} />
         )}
       </View>
     </GestureHandlerRootView>
   );
-}
-
-return (
-  <GestureHandlerRootView style={{ flex: 1 }}>
-    <View style={{ flex: 1, backgroundColor: COLORS.light.background }}>
-      <StatusBar barStyle="dark-content" />
-      <MonitoringManager />
-      {currentScreen === 'Splash' && (
-        <SplashScreen onFinish={() => navigate('Onboarding')} />
-      )}
-
-      {currentScreen === 'Onboarding' && (
-        <Onboarding onComplete={() => navigate('Login')} />
-      )}
-
-      {currentScreen === 'Login' && (
-        <LoginSignup />
-      )}
-    </View>
-  </GestureHandlerRootView>
-);
+};
 
 
 async function registerForPushNotificationsAsync() {

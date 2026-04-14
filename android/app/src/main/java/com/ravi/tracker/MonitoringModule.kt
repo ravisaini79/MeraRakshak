@@ -51,7 +51,7 @@ class MonitoringModule(reactContext: ReactApplicationContext) : ReactContextBase
         
         val appsList = mutableListOf<String>()
         for (i in 0 until protectedApps.size()) {
-            appsList.add(protectedApps.getString(i))
+            protectedApps.getString(i)?.let { appsList.add(it) }
         }
         
         intent.putExtra("protectedApps", appsList.toTypedArray())
