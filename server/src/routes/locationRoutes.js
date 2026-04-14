@@ -23,14 +23,7 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               latitude:
- *                 type: number
- *               longitude:
- *                 type: number
- *               deviceId:
- *                 type: string
+ *             $ref: '#/components/schemas/Location'
  *     responses:
  *       200:
  *         description: Location updated successfully

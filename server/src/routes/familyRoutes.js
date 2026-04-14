@@ -23,10 +23,7 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               familyName:
- *                 type: string
+ *             $ref: '#/components/schemas/FamilyGroup'
  *     responses:
  *       201:
  *         description: Family group created

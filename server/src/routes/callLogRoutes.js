@@ -23,19 +23,7 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               userId:
- *                 type: string
- *               userCallNumber:
- *                 type: string
- *               date:
- *                 type: string
- *                 format: date-time
- *               duration:
- *                 type: string
- *               callType:
- *                 type: string
+ *             $ref: '#/components/schemas/CallLog'
  *     responses:
  *       201:
  *         description: Call log created

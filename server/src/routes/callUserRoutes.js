@@ -23,16 +23,7 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               userId:
- *                 type: string
- *               callerName:
- *                 type: string
- *               callerImg:
- *                 type: string
- *               callNumber:
- *                 type: string
+ *             $ref: '#/components/schemas/CallUser'
  *     responses:
  *       201:
  *         description: Caller created

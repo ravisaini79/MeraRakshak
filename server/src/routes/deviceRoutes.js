@@ -31,14 +31,7 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               deviceName:
- *                 type: string
- *               deviceId:
- *                 type: string
- *               deviceModel:
- *                 type: string
+ *             $ref: '#/components/schemas/Device'
  *     responses:
  *       201:
  *         description: Device registered successfully
