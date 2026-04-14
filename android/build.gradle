@@ -1,6 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+  ext {
+    buildToolsVersion = "35.0.0"
+    minSdkVersion = 24
+    compileSdkVersion = 35
+    targetSdkVersion = 35
+    ndkVersion = "26.1.10909125"
+  }
   repositories {
     google()
     mavenCentral()
@@ -23,30 +30,3 @@ allprojects {
 apply plugin: "expo-root-project"
 apply plugin: "com.facebook.react.rootproject"
 
-allprojects {
-    configurations.all {
-         resolutionStrategy.eachDependency { details ->
-            if (details.requested.group == 'com.facebook.fbjni' && details.requested.name == 'fbjni') {
-                details.useVersion '0.7.0'
-            }
-        }
-    }
-}
-
-subprojects {
-    // This hook is called for each subproject
-    project.plugins.withType(com.android.build.gradle.BasePlugin).configureEach {
-        project.android {
-            defaultConfig {
-                externalNativeBuild {
-                    cmake {
-                        // Force c++_shared and explicitly add it to linker flags for NDK 27
-                        arguments "-DANDROID_STL=c++_shared",
-                                  "-DCMAKE_EXE_LINKER_FLAGS=-lc++_shared",
-                                  "-DCMAKE_SHARED_LINKER_FLAGS=-lc++_shared"
-                    }
-                }
-            }
-        }
-    }
-}

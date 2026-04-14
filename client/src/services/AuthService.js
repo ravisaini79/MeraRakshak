@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+const API_URL = "https://merarakshak.onrender.com/api" || '/api';
 
 const AuthService = {
   login: async (email, password) => {
@@ -67,7 +67,7 @@ const AuthService = {
     });
     return response.data;
   },
-  
+
   toggleBlockUser: async (userId) => {
     const user = AuthService.getCurrentUser();
     const response = await axios.put(`${API_URL}/admin/block-user/${userId}`, {}, {

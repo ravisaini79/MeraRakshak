@@ -13,9 +13,9 @@ class BootReceiver : BroadcastReceiver() {
             serviceIntent.putExtra("isBoot", true)
             
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                context.startForegroundService(serviceIntent)
+                context?.startForegroundService(serviceIntent)
             } else {
-                context.startService(serviceIntent)
+                context?.startService(serviceIntent)
             }
         }
     }

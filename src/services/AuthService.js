@@ -1,9 +1,12 @@
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
-const API_URL = 'http://10.173.157.39:3000'; // Updated for mobile connectivity
+const API_URL = 'https://merarakshak.onrender.com'; // Updated for production connectivity
 
 const AuthService = {
+  getBaseUrl() {
+    return API_URL;
+  },
   async register(userData) {
     try {
       const response = await axios.post(`${API_URL}/api/auth/register`, userData);
