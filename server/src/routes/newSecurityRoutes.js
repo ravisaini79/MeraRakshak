@@ -24,24 +24,7 @@ const router = express.Router();
  *       content:
  *         multipart/form-data:
  *           schema:
- *             type: object
- *             properties:
- *               userId:
- *                 type: string
- *               latitude:
- *                 type: number
- *               longitude:
- *                 type: number
- *               address:
- *                 type: string
- *               date:
- *                 type: string
- *                 format: date-time
- *               isWrong:
- *                 type: boolean
- *               image:
- *                 type: string
- *                 format: binary
+ *             $ref: '#/components/schemas/SecurityEvent'
  *     responses:
  *       201:
  *         description: Event stored

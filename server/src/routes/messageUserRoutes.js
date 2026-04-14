@@ -23,18 +23,7 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               userId:
- *                 type: string
- *               title:
- *                 type: string
- *               lastMessage:
- *                 type: string
- *               time:
- *                 type: string
- *               icon:
- *                 type: string
+ *             $ref: '#/components/schemas/MessageUser'
  *     responses:
  *       201:
  *         description: Message user profile stored

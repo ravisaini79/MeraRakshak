@@ -23,26 +23,7 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               userId:
- *                 type: string
- *               packageName:
- *                 type: string
- *               title:
- *                 type: string
- *               message:
- *                 type: string
- *               time:
- *                 type: string
- *               date:
- *                 type: string
- *               icon:
- *                 type: string
- *               notificationId:
- *                 type: string
- *               image:
- *                 type: string
+ *             $ref: '#/components/schemas/RecoveredMessage'
  *     responses:
  *       201:
  *         description: Recovered notification stored
