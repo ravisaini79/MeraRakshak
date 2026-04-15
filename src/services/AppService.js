@@ -115,7 +115,7 @@ const AppService = {
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data.response || response.data;
     } catch (error) {
       console.error('Failed to send location', error);
       throw error;
@@ -128,7 +128,7 @@ const AppService = {
       const response = await axios.get(`${AuthService.getBaseUrl()}/api/location/MOBILE-APP`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data.response || response.data;
     } catch (error) {
       console.error('Failed to get location history', error);
       return [];
@@ -160,7 +160,7 @@ const AppService = {
       const response = await axios.get(`${AuthService.getBaseUrl()}/api/security/events`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data.response || response.data;
     } catch (error) {
       console.error('Failed to get security events', error);
       return [];
