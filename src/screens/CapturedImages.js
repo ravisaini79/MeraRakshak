@@ -17,7 +17,8 @@ const CapturedImages = ({ onBack }) => {
         headers: { Authorization: `Bearer ${token}` }
       });
       // Filter only events with photos
-      const photoEvents = response.data.filter(event => event.photoUrl);
+      const responseData = response.data.response || response.data;
+      const photoEvents = responseData.filter(event => event.photoUrl);
       setEvents(photoEvents);
     } catch (error) {
       console.error('Error fetching security events:', error);

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const { errorHandler } = require('./middleware/errorHandler');
+const { responseFormatter } = require('./middleware/responseFormatter');
 
 // Route imports
 const morgan = require('morgan');
@@ -25,6 +26,9 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// Global response formatter for API routes
+app.use('/api', responseFormatter);
 
 // Routes
 app.use('/api/auth', authRoutes);

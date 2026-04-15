@@ -6,10 +6,11 @@ const AuthService = {
   login: async (email, password) => {
     console.log('Logging in:', email);
     const response = await axios.post(`${API_URL}/auth/register`.replace('register', 'login'), { email, password });
-    if (response.data.token) {
-      localStorage.setItem('user', JSON.stringify(response.data));
+    const responseData = response.data.response || response.data;
+    if (responseData.token) {
+      localStorage.setItem('user', JSON.stringify(responseData));
     }
-    return response.data;
+    return responseData;
   },
 
   register: async (userData) => {
@@ -17,10 +18,11 @@ const AuthService = {
     console.log('Using API URL:', `${API_URL}/auth/register`);
     try {
       const response = await axios.post(`${API_URL}/auth/register`, userData);
-      if (response.data.token) {
-        localStorage.setItem('user', JSON.stringify(response.data));
+      const responseData = response.data.response || response.data;
+      if (responseData.token) {
+        localStorage.setItem('user', JSON.stringify(responseData));
       }
-      return response.data;
+      return responseData;
     } catch (error) {
       console.error('Registration error details:', error.response?.data || error.message);
       throw error;
@@ -41,7 +43,7 @@ const AuthService = {
     const response = await axios.get(`${API_URL}/devices`, {
       headers: { Authorization: `Bearer ${user?.token}` }
     });
-    return response.data;
+    return response.data.response || response.data;
   },
 
   getSecurityEvents: async () => {
@@ -49,7 +51,7 @@ const AuthService = {
     const response = await axios.get(`${API_URL}/security/events`, {
       headers: { Authorization: `Bearer ${user?.token}` }
     });
-    return response.data;
+    return response.data.response || response.data;
   },
 
   getAdminStats: async () => {
@@ -57,7 +59,7 @@ const AuthService = {
     const response = await axios.get(`${API_URL}/admin/stats`, {
       headers: { Authorization: `Bearer ${user?.token}` }
     });
-    return response.data;
+    return response.data.response || response.data;
   },
 
   getAdminUsers: async () => {
@@ -65,7 +67,7 @@ const AuthService = {
     const response = await axios.get(`${API_URL}/admin/users`, {
       headers: { Authorization: `Bearer ${user?.token}` }
     });
-    return response.data;
+    return response.data.response || response.data;
   },
 
   toggleBlockUser: async (userId) => {
@@ -73,7 +75,7 @@ const AuthService = {
     const response = await axios.put(`${API_URL}/admin/block-user/${userId}`, {}, {
       headers: { Authorization: `Bearer ${user?.token}` }
     });
-    return response.data;
+    return response.data.response || response.data;
   },
 
   triggerAlarm: async (deviceId) => {
@@ -81,7 +83,7 @@ const AuthService = {
     const response = await axios.post(`${API_URL}/devices/${deviceId}/alarm`, {}, {
       headers: { Authorization: `Bearer ${user?.token}` }
     });
-    return response.data;
+    return response.data.response || response.data;
   },
 
   lockDevice: async (deviceId) => {
@@ -89,7 +91,7 @@ const AuthService = {
     const response = await axios.post(`${API_URL}/devices/${deviceId}/lock`, {}, {
       headers: { Authorization: `Bearer ${user?.token}` }
     });
-    return response.data;
+    return response.data.response || response.data;
   },
 
   ringDevice: async (deviceId) => {
@@ -97,7 +99,7 @@ const AuthService = {
     const response = await axios.post(`${API_URL}/devices/${deviceId}/ring`, {}, {
       headers: { Authorization: `Bearer ${user?.token}` }
     });
-    return response.data;
+    return response.data.response || response.data;
   }
 };
 

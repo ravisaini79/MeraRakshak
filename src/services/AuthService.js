@@ -10,10 +10,11 @@ const AuthService = {
   async register(userData) {
     try {
       const response = await axios.post(`${API_URL}/api/auth/register`, userData);
-      if (response.data.token) {
-        await this.saveToken(response.data.token);
+      const responseData = response.data.response || response.data;
+      if (responseData.token) {
+        await this.saveToken(responseData.token);
       }
-      return response.data;
+      return responseData;
     } catch (error) {
       throw error.response?.data?.message || 'Registration failed';
     }
@@ -22,10 +23,11 @@ const AuthService = {
   async login(email, password) {
     try {
       const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
-      if (response.data.token) {
-        await this.saveToken(response.data.token);
+      const responseData = response.data.response || response.data;
+      if (responseData.token) {
+        await this.saveToken(responseData.token);
       }
-      return response.data;
+      return responseData;
     } catch (error) {
       throw error.response?.data?.message || 'Login failed';
     }
@@ -49,7 +51,7 @@ const AuthService = {
       const response = await axios.post(`${API_URL}/api/devices`, deviceData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data.response || response.data;
     } catch (error) {
       console.error('Device registration failed', error);
     }
@@ -61,7 +63,7 @@ const AuthService = {
       const response = await axios.get(`${API_URL}/api/devices`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data.response || response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Failed to fetch devices';
     }
@@ -84,7 +86,7 @@ const AuthService = {
       const response = await axios.get(`${API_URL}/api/location/${deviceId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data.response || response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Failed to fetch location history';
     }
@@ -96,7 +98,7 @@ const AuthService = {
       const response = await axios.post(`${API_URL}/api/family`, { name }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data.response || response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Failed to create family';
     }
@@ -108,7 +110,7 @@ const AuthService = {
       const response = await axios.post(`${API_URL}/api/family/invite`, { groupId, email }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data.response || response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Failed to invite member';
     }
@@ -120,7 +122,7 @@ const AuthService = {
       const response = await axios.get(`${API_URL}/api/family/members`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data.response || response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Failed to fetch family members';
     }
@@ -132,7 +134,7 @@ const AuthService = {
       const response = await axios.post(`${API_URL}/api/security/report-theft`, { deviceId }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data.response || response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Failed to report theft';
     }
@@ -144,7 +146,7 @@ const AuthService = {
       const response = await axios.get(`${API_URL}/api/security/events`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data.response || response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Failed to fetch security events';
     }
@@ -165,7 +167,7 @@ const AuthService = {
       }
 
       const response = await axios.post(`${API_URL}/api/security/log-event`, data, { headers });
-      return response.data;
+      return response.data.response || response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Failed to log security event';
     }
@@ -188,7 +190,7 @@ const AuthService = {
       const response = await axios.get(`${API_URL}/notifications`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data.response || response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Failed to fetch notifications';
     }
