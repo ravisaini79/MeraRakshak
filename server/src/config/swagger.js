@@ -4,10 +4,10 @@ const m2s = require('mongoose-to-swagger');
 
 // Import all models
 const CallLog = require('../models/CallLog');
-const CallUser = require('../models/CallUser');
+const Contact = require('../models/Contact');
 const Device = require('../models/Device');
 const FamilyGroup = require('../models/FamilyGroup');
-const Location = require('../models/Location');
+const LocationHistory = require('../models/LocationHistory');
 const MessageUser = require('../models/MessageUser');
 const RecoveredMessage = require('../models/RecoveredMessage');
 const SecurityEvent = require('../models/SecurityEvent');
@@ -41,10 +41,10 @@ const options = {
       },
       schemas: {
         CallLog: m2s(CallLog),
-        CallUser: m2s(CallUser),
+        Contact: m2s(Contact),
         Device: m2s(Device),
         FamilyGroup: m2s(FamilyGroup),
-        Location: m2s(Location),
+        LocationHistory: m2s(LocationHistory),
         MessageUser: m2s(MessageUser),
         RecoveredMessage: m2s(RecoveredMessage),
         SecurityEvent: m2s(SecurityEvent),

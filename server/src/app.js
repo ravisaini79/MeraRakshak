@@ -15,8 +15,6 @@ const adminRoutes = require('./routes/adminRoutes');
 
 // Advanced Tracking routes
 const callLogRoutes = require('./routes/callLogRoutes');
-const callUserRoutes = require('./routes/callUserRoutes');
-const advancedSecurityRoutes = require('./routes/newSecurityRoutes');
 const messageUserRoutes = require('./routes/messageUserRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 
@@ -39,11 +37,19 @@ app.use('/api/security', securityRoutes);
 app.use('/api/admin', adminRoutes);
 
 // Advanced Tracking API Mounts
+const contactRoutes = require('./routes/contactRoutes');
 app.use('/api/call-logs', callLogRoutes);
-app.use('/api/call-users', callUserRoutes);
-app.use('/api/security-events', advancedSecurityRoutes);
+app.use('/api/contacts', contactRoutes);
+app.use('/api/security-events', securityRoutes);
 app.use('/api/message-users', messageUserRoutes);
 app.use('/api/messages', messageRoutes);
+
+// Download API Docs
+const path = require('path');
+app.get('/api/docs/download', (req, res) => {
+  const filePath = path.join(__dirname, '../API_DOCUMENTATION.txt');
+  res.download(filePath, 'MeraRakshak_API_Docs.txt');
+});
 
 // Setup Swagger
 const setupSwagger = require('./config/swagger');

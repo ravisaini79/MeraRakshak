@@ -8,8 +8,10 @@ const protect = asyncHandler(async (req, res, next) => {
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
       token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
       req.user = await User.findById(decoded.userId).select('-password');
+      req.deviceId = decoded.deviceId; // Set deviceId for subsequent requests
+      
       if (req.user && req.user.isBlocked) {
         res.status(403);
         throw new Error('User is blocked');

@@ -1,5 +1,5 @@
 const express = require('express');
-const { reportTheft, logSecurityEvent, getSecurityEvents } = require('../controllers/securityController');
+const { addSecurityEvent, getSecurityEvents } = require('../controllers/securityController');
 const { protect } = require('../middleware/authMiddleware');
 const { upload } = require('../config/cloudinary');
 const router = express.Router();
@@ -8,39 +8,14 @@ const router = express.Router();
  * @swagger
  * tags:
  *   name: Security
- *   description: Security events and theft reporting
+ *   description: Security events and intruder selfies
  */
 
 /**
  * @swagger
- * /api/security/report-theft:
+ * /api/security-events:
  *   post:
- *     summary: Report device as stolen
- *     tags: [Security]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               deviceId:
- *                 type: string
- *               details:
- *                 type: string
- *     responses:
- *       200:
- *         description: Theft reported successfully
- */
-router.post('/report-theft', protect, reportTheft);
-
-/**
- * @swagger
- * /api/security/log-event:
- *   post:
- *     summary: Log a security event (e.g. wrong unlock attempt)
+ *     summary: Upload an intruder selfie and log event
  *     tags: [Security]
  *     security:
  *       - bearerAuth: []
@@ -51,31 +26,40 @@ router.post('/report-theft', protect, reportTheft);
  *           schema:
  *             type: object
  *             properties:
- *               deviceId:
- *                 type: string
- *               eventType:
- *                 type: string
- *               photo:
+ *               selfieImg:
  *                 type: string
  *                 format: binary
+ *               dateTime:
+ *                 type: string
+ *                 format: date-time
+ *               location:
+ *                 type: string
+ *               tryType:
+ *                 type: string
+ *               imeiNo:
+ *                 type: string
+ *               deviceModel:
+ *                 type: string
  *     responses:
- *       201:
- *         description: Event logged successfully
- */
-router.post('/log-event', protect, upload.single('photo'), logSecurityEvent);
-
-/**
- * @swagger
- * /api/security/events:
+ *       200:
+ *         description: Event recorded successfully
  *   get:
- *     summary: Get user's security events
+ *     summary: Get all security events
  *     tags: [Security]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: deviceId
+ *         schema:
+ *           type: string
+ *         description: Optional device ID
  *     responses:
  *       200:
- *         description: List of security events
+ *         description: Array of security events
  */
-router.get('/events', protect, getSecurityEvents);
+router.route('/')
+  .post(protect, upload.single('selfieImg'), addSecurityEvent)
+  .get(protect, getSecurityEvents);
 
 module.exports = router;

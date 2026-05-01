@@ -1,5 +1,5 @@
 const express = require('express');
-const { createCallLog, getUserCallLogs } = require('../controllers/callLogController');
+const { addCallLog, getCallLogs } = require('../controllers/callLogController');
 const { protect } = require('../middleware/authMiddleware');
 const router = express.Router();
 
@@ -7,14 +7,14 @@ const router = express.Router();
  * @swagger
  * tags:
  *   name: CallLogs
- *   description: Tracking user call logs
+ *   description: Device call logs syncing
  */
 
 /**
  * @swagger
  * /api/call-logs:
  *   post:
- *     summary: Create a new call log
+ *     summary: Add a new call log
  *     tags: [CallLogs]
  *     security:
  *       - bearerAuth: []
@@ -23,36 +23,39 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/CallLog'
+ *             type: object
+ *             properties:
+ *               callerName:
+ *                 type: string
+ *               callerNo:
+ *                 type: string
+ *               callType:
+ *                 type: string
+ *               callDuration:
+ *                 type: string
+ *               dateTime:
+ *                 type: string
+ *                 format: date-time
  *     responses:
  *       201:
- *         description: Call log created
- */
-router.post('/', protect, createCallLog);
-
-/**
- * @swagger
- * /api/call-logs/{userId}:
+ *         description: Call log added successfully
  *   get:
- *     summary: Get user call logs
+ *     summary: Get synced call logs
  *     tags: [CallLogs]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         schema:
- *           type: string
  *       - in: query
- *         name: type
+ *         name: deviceId
  *         schema:
  *           type: string
- *         description: Filter by call type (e.g. missed)
+ *         description: Optional device ID
  *     responses:
  *       200:
  *         description: List of call logs
  */
-router.get('/:userId', protect, getUserCallLogs);
+router.route('/')
+  .post(protect, addCallLog)
+  .get(protect, getCallLogs);
 
 module.exports = router;

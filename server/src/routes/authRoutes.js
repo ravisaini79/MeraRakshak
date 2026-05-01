@@ -6,34 +6,14 @@ const router = express.Router();
  * @swagger
  * tags:
  *   name: Authentication
- *   description: User management and login
+ *   description: User and device authentication
  */
 
 /**
  * @swagger
  * /api/auth/register:
  *   post:
- *     summary: Register a new user
- *     tags: [Authentication]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/User'
- *     responses:
- *       201:
- *         description: User created successfully
- *       400:
- *         description: Bad request
- */
-router.post('/register', registerUser);
-
-/**
- * @swagger
- * /api/auth/login:
- *   post:
- *     summary: Login user
+ *     summary: Register a new user and device
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -41,19 +21,55 @@ router.post('/register', registerUser);
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - email
- *               - password
+ *             properties:
+ *               fullName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               mobile:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               imeiNo:
+ *                 type: string
+ *               deviceModel:
+ *                 type: string
+ *               deviceName:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Registered successfully
+ */
+router.post('/register', registerUser);
+
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login user (and optionally register new device)
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
  *             properties:
  *               email:
  *                 type: string
  *               password:
  *                 type: string
+ *               imeiNo:
+ *                 type: string
+ *               deviceModel:
+ *                 type: string
+ *               deviceName:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Login successful
- *       401:
- *         description: Unauthorized
  */
 router.post('/login', loginUser);
 

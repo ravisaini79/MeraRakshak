@@ -1,106 +1,50 @@
 const SecurityEvent = require('../models/SecurityEvent');
-const Device = require('../models/Device');
 const asyncHandler = require('../middleware/asyncHandler');
 
-// @desc    Report theft
-// @route   POST /api/security/report-theft
-// @access  Private
-const reportTheft = asyncHandler(async (req, res) => {
-  const { deviceId } = req.body;
-  const device = await Device.findOne({ deviceId });
-
-  if (!device) {
-    res.status(404);
-    throw new Error('Device not found');
-  }
-
-  device.status = 'Stolen';
-  await device.save();
-
-  const event = await SecurityEvent.create({
-    deviceId,
-    type: 'THEFT_REPORTED',
-    message: `Device ${device.name} marked as STOLEN.`,
-    severity: 'CRITICAL',
-  });
-
-  res.json({ message: 'Theft reported', event });
-});
-
-// @desc    Log security event (with optional photo)
-// @route   POST /api/security/log-event
-// @access  Private
-const logSecurityEvent = asyncHandler(async (req, res) => {
-  const { deviceId, type, message, severity, lat, lng } = req.body;
-  const photoUrl = req.file ? req.file.path : null;
-
-  const event = await SecurityEvent.create({
-    deviceId,
-    type,
-    message,
-    severity,
-    photoUrl,
-    location: { lat, lng },
-  });
-
-  res.json(event);
-});
-
-// @desc    Get all security events for user's devices
-// @route   GET /api/security/events
-// @access  Private
-const getSecurityEvents = asyncHandler(async (req, res) => {
-  const userDevices = await Device.find({ userId: req.user._id });
-  const deviceIds = userDevices.map(d => d.deviceId);
-  
-  const events = await SecurityEvent.find({ deviceId: { $in: deviceIds } }).sort('-timestamp');
-  res.json(events);
-});
-
-// @desc    Create a new user-level security event
+// @desc    Add intruder selfie / security event
 // @route   POST /api/security-events
 // @access  Private
-const createSecurityEvent = asyncHandler(async (req, res) => {
-  const { userId, latitude, longitude, address, date, isWrong } = req.body;
-  const imagePath = req.file ? req.file.path : null;
+const addSecurityEvent = asyncHandler(async (req, res) => {
+  const { dateTime, location, tryType, imeiNo, deviceModel } = req.body;
+  const image = req.file ? req.file.path : null;
 
-  if (!userId) {
-    res.status(400);
-    throw new Error('User ID is required');
+  // We are bypassing responseFormatter logic specifically for this return structure
+  if (!image) {
+    return res.json({ status: 0, message: "Selfie image is missing" });
   }
 
+  // We can trust req.deviceId from the auth token, but if they pass imeiNo we can use it to verify
+  // or just directly save the event
   const event = await SecurityEvent.create({
-    userId,
-    imagePath,
-    latitude,
-    longitude,
-    address,
-    date,
-    isWrong,
+    userId: req.user._id,
+    deviceId: req.deviceId, 
+    image, // This comes from selfieImg parameter
+    location,
+    tryType,
+    dateTime,
   });
 
-  res.status(201).json(event);
+  // Explicitly return status: 1 and message to bypass standard formatter rules or be reformatted correctly
+  res.json({
+    status: 1,
+    message: "Security event and selfie has been recorded successfully",
+    event: event
+  });
 });
 
-// @desc    Get user-level security events
-// @route   GET /api/security-events/:userId
+// @desc    Get security events
+// @route   GET /api/security-events
 // @access  Private
-const getUserSecurityEvents = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
+const getSecurityEvents = asyncHandler(async (req, res) => {
+  const deviceId = req.query.deviceId || req.deviceId;
 
-  if (req.user._id.toString() !== userId) {
-    res.status(401);
-    throw new Error('Not authorized to access these events');
+  if (!deviceId) {
+    res.status(400);
+    throw new Error('Device ID is required');
   }
 
-  const events = await SecurityEvent.find({ userId }).sort('-date');
+  const events = await SecurityEvent.find({ userId: req.user._id, deviceId });
   res.json(events);
 });
 
-module.exports = { 
-  reportTheft, 
-  logSecurityEvent, 
-  getSecurityEvents,
-  createSecurityEvent,
-  getUserSecurityEvents
-};
+module.exports = { addSecurityEvent, getSecurityEvents };

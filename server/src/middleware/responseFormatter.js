@@ -2,8 +2,8 @@ const responseFormatter = (req, res, next) => {
   const originalJson = res.json;
 
   res.json = function (data) {
-    // Prevent double wrapping and skip swagger endpoints if any under api
-    if (data && (data.status === 'success' || data.status === 'failed' || data.status === 'error')) {
+    // Prevent double wrapping and allow literal 1 or 0 status to pass through unmodified
+    if (data && (data.status === 'success' || data.status === 'failed' || data.status === 'error' || data.status === 1 || data.status === 0)) {
       return originalJson.call(this, data);
     }
 
