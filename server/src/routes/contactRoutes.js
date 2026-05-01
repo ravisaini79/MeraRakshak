@@ -1,21 +1,21 @@
 const express = require('express');
-const { updateLocation, getLocationHistory } = require('../controllers/locationController');
+const { addContact, getContacts } = require('../controllers/contactController');
 const { protect } = require('../middleware/authMiddleware');
 const router = express.Router();
 
 /**
  * @swagger
  * tags:
- *   name: Location
- *   description: Location history and tracking
+ *   name: Contacts
+ *   description: Device contacts syncing
  */
 
 /**
  * @swagger
- * /api/location:
+ * /api/contacts:
  *   post:
- *     summary: Update device location
- *     tags: [Location]
+ *     summary: Add a new contact
+ *     tags: [Contacts]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -25,20 +25,18 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               latitude:
- *                 type: number
- *               longitude:
- *                 type: number
- *               location:
+ *               callerName:
  *                 type: string
- *               battery:
- *                 type: number
+ *               callerNo:
+ *                 type: string
+ *               callerImg:
+ *                 type: string
  *     responses:
  *       201:
- *         description: Location updated successfully
+ *         description: Contact added successfully
  *   get:
- *     summary: Get location history
- *     tags: [Location]
+ *     summary: Get synced contacts
+ *     tags: [Contacts]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -49,10 +47,10 @@ const router = express.Router();
  *         description: Optional device ID
  *     responses:
  *       200:
- *         description: Location history array
+ *         description: List of contacts
  */
 router.route('/')
-  .post(protect, updateLocation)
-  .get(protect, getLocationHistory);
+  .post(protect, addContact)
+  .get(protect, getContacts);
 
 module.exports = router;

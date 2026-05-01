@@ -28,7 +28,13 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (data) => {
     setUserToken(data.token);
-    setUser(data.user);
+    setUser({
+      userId: data.userId,
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      role: data.role
+    });
     if (data.token) {
       await AuthService.saveToken(data.token);
       // Automatically register this device

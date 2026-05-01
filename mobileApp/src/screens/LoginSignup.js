@@ -7,7 +7,7 @@ import Card from '../components/Card';
 import AuthService from '../services/AuthService';
 import { useAuth } from '../context/AuthContext';
 
-const LoginSignup = () => {
+const LoginSignup = ({ onLoginSuccess }) => {
   const { login } = useAuth();
   const [isSignup, setIsSignup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -59,7 +59,10 @@ const LoginSignup = () => {
       }
       
       if (data && data.token) {
-        login(data); // This handles token storage and navigation
+        await login(data); // This handles token storage
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
       }
     } catch (err) {
       Alert.alert('Error', typeof err === 'string' ? err : 'Authentication failed');

@@ -1,51 +1,43 @@
 const CallLog = require('../models/CallLog');
 const asyncHandler = require('../middleware/asyncHandler');
 
-// @desc    Create a new call log entry
+// @desc    Add a new call log
 // @route   POST /api/call-logs
 // @access  Private
-const createCallLog = asyncHandler(async (req, res) => {
-  const { userId, userCallNumber, date, duration, callType } = req.body;
+const addCallLog = asyncHandler(async (req, res) => {
+  const { callerName, callerNo, callType, callDuration, dateTime } = req.body;
 
-  if (!userId || !userCallNumber) {
+  if (!callerNo) {
     res.status(400);
-    throw new Error('Please provide userId and userCallNumber');
+    throw new Error('Please provide callerNo');
   }
 
   const callLog = await CallLog.create({
-    userId,
-    userCallNumber,
-    date,
-    duration,
+    userId: req.user._id,
+    deviceId: req.deviceId,
+    callerName,
+    callerNo,
     callType,
+    callDuration,
+    dateTime,
   });
 
   res.status(201).json(callLog);
 });
 
-// @desc    Get call logs for a specific user with optional filtering
-// @route   GET /api/call-logs/:userId?type=missed
+// @desc    Get call logs
+// @route   GET /api/call-logs
 // @access  Private
-const getUserCallLogs = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
-  const { type } = req.query;
+const getCallLogs = asyncHandler(async (req, res) => {
+  const deviceId = req.query.deviceId || req.deviceId;
 
-  if (req.user._id.toString() !== userId) {
-    res.status(401);
-    throw new Error('Not authorized to access these call logs');
+  if (!deviceId) {
+    res.status(400);
+    throw new Error('Device ID is required');
   }
 
-  const query = { userId };
-  if (type) {
-    query.callType = type;
-  }
-
-  const callLogs = await CallLog.find(query).sort({ date: -1, createdAt: -1 });
-
+  const callLogs = await CallLog.find({ userId: req.user._id, deviceId });
   res.json(callLogs);
 });
 
-module.exports = {
-  createCallLog,
-  getUserCallLogs,
-};
+module.exports = { addCallLog, getCallLogs };

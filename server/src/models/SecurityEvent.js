@@ -1,26 +1,14 @@
 const mongoose = require('mongoose');
 
 const securityEventSchema = new mongoose.Schema({
-  // Legacy fields (from existing feature)
-  deviceId: { type: String },
-  type: { type: String },
-  message: { type: String },
-  severity: { type: String, enum: ['CRITICAL', 'WARNING', 'INFO'], default: 'INFO' },
-  photoUrl: { type: String },
-  location: {
-    lat: { type: Number },
-    lng: { type: Number },
-  },
-  timestamp: { type: Date, default: Date.now },
-
-  // New advanced tracking fields
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  imagePath: { type: String },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  deviceId: { type: mongoose.Schema.Types.ObjectId, ref: 'Device', required: true },
+  image: { type: String }, // Cloudinary URL
   latitude: { type: Number },
   longitude: { type: Number },
-  address: { type: String },
-  date: { type: Date, default: Date.now },
-  isWrong: { type: Boolean },
+  location: { type: String },
+  tryType: { type: String, enum: ['wrong', 'unlock'] },
+  dateTime: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('SecurityEvent', securityEventSchema);
