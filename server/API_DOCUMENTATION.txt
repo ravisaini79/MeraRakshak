@@ -5,6 +5,7 @@ Base URL: https://merarakshak.onrender.com (or http://localhost:3000)
 
 Note: Most APIs require an Authorization header.
 Header: "Authorization: Bearer <your_token>"
+Global Note: Almost all API success responses are wrapped in a standard format containing "status": "success", a "message", and the data inside a "response" object (unless otherwise noted).
 
 ------------------------------------------------------
 1. REGISTER USER & DEVICE
@@ -25,7 +26,20 @@ Request Body:
   "deviceName": "John's Primary Phone"
 }
 
-Response: Returns User details, Device ID, and JWT Token.
+Expected Response:
+{
+  "status": "success",
+  "message": "Request successful",
+  "response": {
+    "userId": "64b1f...",
+    "deviceId": "64b1f...",
+    "fullName": "John Doe",
+    "email": "john@example.com",
+    "mobile": "1234567890",
+    "role": "user",
+    "token": "eyJhbGciOiJIUzI1NiIs..."
+  }
+}
 
 ------------------------------------------------------
 2. LOGIN USER & DEVICE
@@ -43,7 +57,20 @@ Request Body:
   "deviceName": "John's Phone"        (Optional - Mobile only)
 }
 
-Response: Returns User details, Device ID, and JWT Token.
+Expected Response:
+{
+  "status": "success",
+  "message": "Request successful",
+  "response": {
+    "userId": "64b1f...",
+    "deviceId": "64b1f...",
+    "fullName": "John Doe",
+    "email": "john@example.com",
+    "mobile": "1234567890",
+    "role": "user",
+    "token": "eyJhbGciOiJIUzI1NiIs..."
+  }
+}
 
 ------------------------------------------------------
 3. SYNC CONTACTS
@@ -59,6 +86,22 @@ Request Body:
   "callerImg": "https://example.com/jane.jpg"
 }
 
+Expected Response:
+{
+  "status": "success",
+  "message": "Request successful",
+  "response": {
+    "userId": "64b1f...",
+    "deviceId": "64b1f...",
+    "callerName": "Jane Doe",
+    "callerNo": "+1987654321",
+    "callerImg": "https://example.com/jane.jpg",
+    "_id": "65b2d...",
+    "createdAt": "2026-05-01T15:30:00.000Z",
+    "updatedAt": "2026-05-01T15:30:00.000Z"
+  }
+}
+
 ------------------------------------------------------
 4. SYNC CALL LOGS
 ------------------------------------------------------
@@ -72,7 +115,23 @@ Request Body:
   "callerNo": "+1987654321",
   "callType": "missed",
   "callDuration": "0s",
-  "dateTime": "2026-05-01T15:30:00Z"
+  "dateTime": "2026-05-01T15:30:00.000Z"
+}
+
+Expected Response:
+{
+  "status": "success",
+  "message": "Request successful",
+  "response": {
+    "userId": "64b1f...",
+    "deviceId": "64b1f...",
+    "callerName": "Jane Doe",
+    "callerNo": "+1987654321",
+    "callType": "missed",
+    "callDuration": "0s",
+    "dateTime": "2026-05-01T15:30:00.000Z",
+    "_id": "65b3e..."
+  }
 }
 
 ------------------------------------------------------
@@ -91,6 +150,21 @@ Request Body:
   "timestamp": "2026-05-01T15:30:00Z" (Optional)
 }
 
+Expected Response:
+{
+  "status": "success",
+  "message": "Request successful",
+  "response": {
+    "deviceId": "64b1f...",
+    "latitude": 40.7128,
+    "longitude": -74.0060,
+    "location": "New York, USA",
+    "battery": 85,
+    "timestamp": "2026-05-01T15:30:00.000Z",
+    "_id": "65b4f..."
+  }
+}
+
 ------------------------------------------------------
 6. ADD INTRUDER SELFIE (SECURITY EVENT)
 ------------------------------------------------------
@@ -106,12 +180,48 @@ Form-Data Fields:
 - imeiNo (Text): "IMEI-123456"
 - deviceModel (Text): "Samsung Galaxy S23"
 
+Expected Response (Custom Format):
+{
+  "status": 1,
+  "message": "Security event and selfie has been recorded successfully",
+  "event": {
+    "userId": "64b1f...",
+    "deviceId": "64b1f...",
+    "image": "https://res.cloudinary.com/yourcloud/image/upload/v123456/tracker_evidence/xyz.jpg",
+    "location": "New York, USA",
+    "tryType": "wrong",
+    "dateTime": "2026-05-01T15:30:00.000Z",
+    "_id": "65b5g..."
+  }
+}
+
 ------------------------------------------------------
 7. GET ALL DEVICES FOR USER (FIND MY DEVICE)
 ------------------------------------------------------
 Endpoint: GET /api/devices
 Auth Required: Yes
 Query Params: None
+
+Expected Response:
+{
+  "status": "success",
+  "message": "Request successful",
+  "response": [
+    {
+      "_id": "64b1f...",
+      "deviceName": "John's Primary Phone",
+      "location": "New York, USA",
+      "latitude": 40.7128,
+      "longitude": -74.0060,
+      "battery": 85,
+      "lastSeen": "2026-05-01T15:30:00.000Z",
+      "status": "active",
+      "imeiNo": "IMEI-123456",
+      "deviceModel": "Samsung Galaxy S23",
+      "createdAt": "2026-05-01T15:00:00.000Z"
+    }
+  ]
+}
 
 ------------------------------------------------------
 8. GET DEVICE HISTORY / SYNCED DATA
@@ -123,4 +233,13 @@ Auth Required: Yes
 - Get Location: GET /api/location?deviceId=<optional_id>
 - Get Selfies: GET /api/security-events?deviceId=<optional_id>
 
-Note: If deviceId is omitted, it will return data for the device that made the request.
+Note: If deviceId is omitted, it will automatically return data for the device that made the request.
+
+Expected Response:
+{
+  "status": "success",
+  "message": "Request successful",
+  "response": [
+    // Array of objects (contacts, call logs, locations, or selfies)
+  ]
+}
