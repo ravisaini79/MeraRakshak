@@ -44,6 +44,13 @@ app.use('/api/security-events', securityRoutes);
 app.use('/api/message-users', messageUserRoutes);
 app.use('/api/messages', messageRoutes);
 
+// Download API Docs
+const path = require('path');
+app.get('/api/docs/download', (req, res) => {
+  const filePath = path.join(__dirname, '../API_DOCUMENTATION.txt');
+  res.download(filePath, 'MeraRakshak_API_Docs.txt');
+});
+
 // Setup Swagger
 const setupSwagger = require('./config/swagger');
 setupSwagger(app);

@@ -1,0 +1,126 @@
+======================================================
+         MERARAKSHAK API DOCUMENTATION
+======================================================
+Base URL: https://merarakshak.onrender.com (or http://localhost:3000)
+
+Note: Most APIs require an Authorization header.
+Header: "Authorization: Bearer <your_token>"
+
+------------------------------------------------------
+1. REGISTER USER & DEVICE
+------------------------------------------------------
+Endpoint: POST /api/auth/register
+Auth Required: No
+Content-Type: application/json
+
+Request Body:
+{
+  "fullName": "John Doe",
+  "email": "john@example.com",
+  "mobile": "1234567890",
+  "password": "password123",
+  "address": "123 Main St",
+  "imeiNo": "IMEI-123456",
+  "deviceModel": "Samsung Galaxy S23",
+  "deviceName": "John's Primary Phone"
+}
+
+Response: Returns User details, Device ID, and JWT Token.
+
+------------------------------------------------------
+2. LOGIN USER & DEVICE
+------------------------------------------------------
+Endpoint: POST /api/auth/login
+Auth Required: No
+Content-Type: application/json
+
+Request Body:
+{
+  "email": "john@example.com",
+  "password": "password123",
+  "imeiNo": "IMEI-123456",            (Optional - Mobile only)
+  "deviceModel": "Samsung Galaxy",    (Optional - Mobile only)
+  "deviceName": "John's Phone"        (Optional - Mobile only)
+}
+
+Response: Returns User details, Device ID, and JWT Token.
+
+------------------------------------------------------
+3. SYNC CONTACTS
+------------------------------------------------------
+Endpoint: POST /api/contacts
+Auth Required: Yes
+Content-Type: application/json
+
+Request Body:
+{
+  "callerName": "Jane Doe",
+  "callerNo": "+1987654321",
+  "callerImg": "https://example.com/jane.jpg"
+}
+
+------------------------------------------------------
+4. SYNC CALL LOGS
+------------------------------------------------------
+Endpoint: POST /api/call-logs
+Auth Required: Yes
+Content-Type: application/json
+
+Request Body:
+{
+  "callerName": "Jane Doe",
+  "callerNo": "+1987654321",
+  "callType": "missed",
+  "callDuration": "0s",
+  "dateTime": "2026-05-01T15:30:00Z"
+}
+
+------------------------------------------------------
+5. UPDATE LOCATION
+------------------------------------------------------
+Endpoint: POST /api/location
+Auth Required: Yes
+Content-Type: application/json
+
+Request Body:
+{
+  "latitude": 40.7128,
+  "longitude": -74.0060,
+  "location": "New York, USA",
+  "battery": 85,
+  "timestamp": "2026-05-01T15:30:00Z" (Optional)
+}
+
+------------------------------------------------------
+6. ADD INTRUDER SELFIE (SECURITY EVENT)
+------------------------------------------------------
+Endpoint: POST /api/security-events
+Auth Required: Yes
+Content-Type: multipart/form-data
+
+Form-Data Fields:
+- selfieImg (File)
+- dateTime (Text): "2026-05-01T15:30:00Z"
+- location (Text): "New York, USA"
+- tryType (Text): "wrong"
+- imeiNo (Text): "IMEI-123456"
+- deviceModel (Text): "Samsung Galaxy S23"
+
+------------------------------------------------------
+7. GET ALL DEVICES FOR USER (FIND MY DEVICE)
+------------------------------------------------------
+Endpoint: GET /api/devices
+Auth Required: Yes
+Query Params: None
+
+------------------------------------------------------
+8. GET DEVICE HISTORY / SYNCED DATA
+------------------------------------------------------
+Auth Required: Yes
+
+- Get Contacts: GET /api/contacts?deviceId=<optional_id>
+- Get Call Logs: GET /api/call-logs?deviceId=<optional_id>
+- Get Location: GET /api/location?deviceId=<optional_id>
+- Get Selfies: GET /api/security-events?deviceId=<optional_id>
+
+Note: If deviceId is omitted, it will return data for the device that made the request.
